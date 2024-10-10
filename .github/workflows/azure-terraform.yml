@@ -28,8 +28,20 @@ jobs:
         - name: Terraform Validate
           run: terraform validate
 
+        # Set environment variable based on branch
+        - name: Set environment variable based on branch
+          run: |
+            if [[ "${{ github.ref }}" == "refs/heads/development" ]]; then
+              echo "ENVIRONMENT=development" >> $GITHUB_ENV
+            elif [[ "${{ github.ref }}" == "refs/heads/production" ]]; then
+              echo "ENVIRONMENT=production" >> $GITHUB_ENV
+            else
+              echo "ENVIRONMENT=default" >> $GITHUB_ENV
+            fi
+
+        # Terraform Plan with environment passed 
         - name: terraform Plan
-          run: terraform plan -var-file:"${{ github.head_ref }}.tfvars"
+          run: terraform plan -var="environment=${{ env.ENVIRONMENT }}"
 
         # Security testing with TFSec
         - name: Run TFSec Security Checks
@@ -58,9 +70,21 @@ jobs:
         - name: Checkout code
           uses: actions/checkout@v2
 
+        # Extract Azure credentials from Github Secrets
+        - name: Configure Azure Credentials
+          run: |
+            echo "AZURE_SUBSCRIPTION_ID=${{ secrets.AZURE_SUBSCRIPTION_ID }}" >> $GITHUB_ENV
+            echo "AZURE_CLIENT_ID=${{ secrets.AZURE_CLIENT_ID }}" >> $GITHUB_ENV
+            echo "AZURE_CLIENT_SECRET=${{ secrets.AZURE_CLIENT_SECRET }}" >> $GITHUB_ENV
+            echo "AZURE_TENANT_ID=${{ secrets.AZURE_TENANT_ID }}" >> $GITHUB_ENV
+
         # Re-run Terraform plan before applying
         - name: Terraform Plan (Re-run)
-          run: terraform plan -var-file="${{ github.ref_name }}.tfvars"
+          run: terraform plan -var="azure_subscription_id=${{ env.AZURE_SUBSCRIPTION_ID }}" \
+                              -var="azure_client_id=${{ env.AZURE_CLIENT_ID }}" \
+                              -var="azure_client_secret=${{ env.AZURE_CLIENT_SECRET }}" \
+                              -var="azure_tenant_id=${{ env.AZURE_TENANT_ID }}" \
+                              -var="environment=${{ env.ENVIRONMENT }}"
 
         # Manual approval before terraform apply
         - name: Manual Approval
@@ -70,7 +94,11 @@ jobs:
 
         # Apply changes after approval
         - name: Terraform Apply
-          run: terrform apply -var-file="${{ github.ref_name }}.tfvars"
+          run: terraform apply -var="azure_subscription_id=${{ env.AZURE_SUBSCRIPTION_ID }}" \
+                               -var="azure_client_id=${{ env.AZURE_CLIENT_ID }}" \
+                               -var="azure_client_secret=${{ env.AZURE_CLIENT_SECRET }}" \
+                               -var="azure_tenant_id=${{ env.AZURE_TENANT_ID }}" \
+                               -var="environment=${{ env.ENVIRONMENT }}"
 
         # Wait for 1 hour and destroy resources
         - name: Wait for demonstration period
@@ -78,4 +106,9 @@ jobs:
 
         # Destroy resources to avoid unnecessary costs
         - name: Terraform Destroy
-          run: terraform destroy -auto-approve -var-file="${{ github.ref_name }}.tfvars"
+          run: terraform destroy -auto-approve \
+              -var="azure_subscription_id=${{ env.AZURE_SUBSCRIPTION_ID }}" \
+              -var="azure_client_id=${{ env.AZURE_CLIENT_ID }}" \
+              -var="azure_client_secret=${{ env.AZURE_CLIENT_SECRET }}" \
+              -var="azure_tenant_id=${{ env.AZURE_TENANT_ID }}" \
+              -var="environment=${{ env.ENVIRONMENT }}"
