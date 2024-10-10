@@ -11,7 +11,7 @@ import (
 func TestAzureInfra(t *testing.T) {
 	terraformOptions := &terraform.Options{
 		// Path to the Terraform code that deploys the infrastructure
-		TerraformDir: "../", // Adjust this based on where your Terraform files are located
+		TerraformDir: "../",
 	}
 
 	// Ensure resources are cleaned up after tests complete
