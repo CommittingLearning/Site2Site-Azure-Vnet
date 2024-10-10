@@ -82,6 +82,10 @@ jobs:
             echo "AZURE_CLIENT_SECRET=${{ secrets.AZURE_CLIENT_SECRET }}" >> $GITHUB_ENV
             echo "AZURE_TENANT_ID=${{ secrets.AZURE_TENANT_ID }}" >> $GITHUB_ENV
 
+        # Initialize Terraform Working Directory
+        - name: Terraform Init
+          run: terraform init
+
         # Re-run Terraform plan before applying
         - name: Terraform Plan (Re-run)
           run: terraform plan -var="azure_subscription_id=${{ env.AZURE_SUBSCRIPTION_ID }}" \
