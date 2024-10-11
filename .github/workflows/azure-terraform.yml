@@ -55,7 +55,7 @@ jobs:
 
     # Terraform Plan with environment passed and save plan output
     - name: Terraform Plan
-      run: terraform plan -var="environment=${{ env.ENVIRONMENT }}" -out=tfplan
+      run: terraform plan -var="environment=${{ env.ENVIRONMENT }}" -var="azure_subscription_id=${{ secrets.AZURE_SUBSCRIPTION_ID }}" -var="azure_client_id=${{ secrets.AZURE_CLIENT_ID }}" -var="azure_tenant_id=${{ secrets.AZURE_TENANT_ID }}" -out=tfplan
 
     # Display the Terraform Plan output in the logs
     - name: Show Terraform Plan
