@@ -14,6 +14,7 @@ on:
 permissions:
   id-token: write  # This allows fetching an OIDC token for authentication
   contents: read   # This allows reading the repository contents
+  issues: write    # Required for creating approval issues
 
 jobs:
   validate-and-test:
