@@ -132,9 +132,9 @@ jobs:
 
     # Unit & integration tests with Terratest
     - name: Run Terratest
+      continue-on-error: true
       run: |
         go test -v ./test \
-        continue-on-error: true
         -var "azure_subscription_id=${{ secrets.AZURE_SUBSCRIPTION_ID }}" \
         -var "azure_client_id=${{ secrets.AZURE_CLIENT_ID }}" \
         -var "azure_tenant_id=${{ secrets.AZURE_TENANT_ID }}" \
