@@ -103,11 +103,11 @@ jobs:
     - name: Show Terraform Plan (Re-run)
       run: terraform show -json tfplan
 
-    # Manual approval before terraform apply
-    - name: Manual Approval
-      uses: hmarr/auto-approve-action@v2
+    # Wait for manual approval before apply
+    - name: Wait for Manual Approval
+      uses: ericcornelissen/wait-for-approval-action@v1
       with:
-        github-token: ${{ secrets.GITHUB_TOKEN }}
+        approvers: 'CommittingLearning'
 
     # Apply changes after approval
     - name: Terraform Apply
