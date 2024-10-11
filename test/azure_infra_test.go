@@ -29,13 +29,18 @@ func TestAzureInfra(t *testing.T) {
 		},
 	}
 
-	// Ensure resources are cleaned up after tests complete
-	defer terraform.Destroy(t, terraformOptions)
+	// Run `terraform init` and `terraform plan` to check the infrastructure before applying changes
+	terraform.InitAndPlan(t, terraformOptions)
 
-	// Run `terraform init` and `terraform apply`
-	terraform.InitAndApply(t, terraformOptions)
-
-	// Validate that the VNet has been created
+	// Validate that the VNet name contains the environment variable
 	vnetName := terraform.Output(t, terraformOptions, "vnet_name")
-	assert.NotEmpty(t, vnetName, "VNet should have a valid name")
+	assert.Contains(t, vnetName, environment, "VNet name should include the environment")
+
+	// Validate the VNet address space is 10.0.0.0/16
+	vnetAddressSpace := terraform.Output(t, terraformOptions, "vnet_address_space")
+	assert.Equal(t, "10.0.0.0/16", vnetAddressSpace, "VNet address space should be 10.0.0.0/16")
+
+	// Validate that there are two subnets being created
+	subnetCount := terraform.OutputList(t, terraformOptions, "subnets")
+	assert.Equal(t, 2, len(subnetCount), "There should be exactly two subnets created")
 }
