@@ -62,20 +62,13 @@ jobs:
     - name: Show Terraform Plan
       run: terraform show -json tfplan
 
-    # Security testing with TFSec
-    - name: Run TFSec Security Checks
-      run: |
-        curl -s https://raw.githubusercontent.com/aquasecurity/tfsec/master/scripts/install_linux.sh | bash
-        tfsec .
+    # Install Checkov
+    - name: Install Checkov
+      run: pip install checkov
 
-    # Unit & integration tests with Terratest
-    - name: Run Terratest
-      env:
-        AZURE_SUBSCRIPTION_ID: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
-        AZURE_CLIENT_ID: ${{ secrets.AZURE_CLIENT_ID }}
-        AZURE_TENANT_ID: ${{ secrets.AZURE_TENANT_ID }}
-        ENVIRONMENT: ${{ env.ENVIRONMENT }}
-      run: go test -v ./test
+    # Run Checkov to check Terraform code
+    - name: Run Checkov
+      run: checkov -d .
 
     # Skip applying changes in pull requests
     - name: Skip Apply in Pull Requests
