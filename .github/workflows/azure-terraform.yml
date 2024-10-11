@@ -103,11 +103,16 @@ jobs:
     - name: Show Terraform Plan (Re-run)
       run: terraform show -json tfplan
 
-    # Wait for manual approval before apply
-    - name: Wait for Manual Approval
-      uses: ericcornelissen/wait-for-approval-action@v1
+    # Pause and wait for manual approval
+    - name: Manual Approval before Apply
+      uses: trstringer/manual-approval@v1
       with:
-        approvers: 'CommittingLearning'
+        secret: ${{ github.TOKEN }}
+        approvers: CommittingLearning
+        issue-title: "Performing Terraform Apply in ${{ env.ENVIRONMENT }} environment"
+        issue-body: "Please approve or deny the deployment"
+        additional-approved-words: 'yes'
+        additional-denied-words: 'no'
 
     # Apply changes after approval
     - name: Terraform Apply
