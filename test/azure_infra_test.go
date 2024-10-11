@@ -29,6 +29,9 @@ func TestAzureInfra(t *testing.T) {
 			"azure_tenant_id":       azureTenantID,
 			"environment":           environment,
 		},
+
+		// Save the plan to a file
+		PlanFilePath: "tfplan",
 	}
 
 	// Run `terraform init` and `terraform plan`
