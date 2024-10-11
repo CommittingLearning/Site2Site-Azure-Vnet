@@ -133,7 +133,11 @@ jobs:
     # Unit & integration tests with Terratest
     - name: Run Terratest
       run: |
-        go test -v ./test
+        go test -v ./test \
+        -var "azure_subscription_id=${{ secrets.AZURE_SUBSCRIPTION_ID }}" \
+        -var "azure_client_id=${{ secrets.AZURE_CLIENT_ID }}" \
+        -var "azure_tenant_id=${{ secrets.AZURE_TENANT_ID }}" \
+        -var "environment=${{ env.ENVIRONMENT }}"
 
     # Wait for 1 hour and destroy resources
     - name: Wait for demonstration period
