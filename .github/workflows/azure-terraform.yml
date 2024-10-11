@@ -62,13 +62,14 @@ jobs:
     - name: Show Terraform Plan
       run: terraform show -json tfplan
 
-    # Install Checkov
-    - name: Install Checkov
-      run: pip install checkov
+    # Install TFSec for Terraform security checks
+    - name: Install TFSec
+      run: |
+        curl -s https://raw.githubusercontent.com/aquasecurity/tfsec/master/scripts/install_linux.sh | bash
 
-    # Run Checkov to check Terraform code
-    - name: Run Checkov
-      run: checkov -d .
+    # Run TFSec to check Terraform code for potential security issues
+    - name: Run TFSec Security Checks
+      run: tfsec .
 
     # Skip applying changes in pull requests
     - name: Skip Apply in Pull Requests
@@ -125,8 +126,6 @@ jobs:
         approvers: CommittingLearning
         issue-title: "Performing Terraform Apply in ${{ env.ENVIRONMENT }} environment"
         issue-body: "Please approve or deny the deployment"
-        additional-approved-words: 'yes'
-        additional-denied-words: 'no'
 
     # Apply changes after approval
     - name: Terraform Apply
