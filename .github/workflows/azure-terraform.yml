@@ -95,6 +95,17 @@ jobs:
     - name: Terraform Init
       run: terraform init
 
+    # Set environment variable based on branch
+    - name: Set environment variable based on branch
+      run: |
+        if [[ "${{ github.ref }}" == "refs/heads/development" ]]; then
+          echo "ENVIRONMENT=development" >> $GITHUB_ENV
+        elif [[ "${{ github.ref }}" == "refs/heads/production" ]]; then
+          echo "ENVIRONMENT=production" >> $GITHUB_ENV
+        else
+          echo "ENVIRONMENT=default" >> $GITHUB_ENV
+        fi
+
     # Re-run Terraform plan before applying
     - name: Terraform Plan (Re-run)
       run: terraform plan -var="environment=${{ env.ENVIRONMENT }}" -var="azure_subscription_id=${{ secrets.AZURE_SUBSCRIPTION_ID }}" -var="azure_client_id=${{ secrets.AZURE_CLIENT_ID }}" -var="azure_tenant_id=${{ secrets.AZURE_TENANT_ID }}" -out=tfplan
@@ -107,7 +118,7 @@ jobs:
     - name: Manual Approval before Apply
       uses: trstringer/manual-approval@v1
       with:
-        secret: ${{ github.TOKEN }}
+        secret: ${{ secrets.github_TOKEN }}
         approvers: CommittingLearning
         issue-title: "Performing Terraform Apply in ${{ env.ENVIRONMENT }} environment"
         issue-body: "Please approve or deny the deployment"
