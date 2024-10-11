@@ -1,7 +1,9 @@
 package test
 
 import (
+	"encoding/json"
 	"os"
+	"strings"
 	"testing"
 
 	"github.com/gruntwork-io/terratest/modules/terraform"
@@ -29,18 +31,40 @@ func TestAzureInfra(t *testing.T) {
 		},
 	}
 
-	// Run `terraform init` and `terraform plan` to check the infrastructure before applying changes
+	// Run `terraform init` and `terraform plan`
 	terraform.InitAndPlan(t, terraformOptions)
 
-	// Validate that the VNet name contains the environment variable
-	vnetName := terraform.Output(t, terraformOptions, "vnet_name")
-	assert.Contains(t, vnetName, environment, "VNet name should include the environment")
+	// Extract and parse the plan JSON for validation
+	plan := terraform.Show(t, terraformOptions)
+	var planData map[string]interface{}
+	err := json.Unmarshal([]byte(plan), &planData)
+	if err != nil {
+		t.Fatalf("Failed to parse Terraform plan: %v", err)
+	}
+
+	// Validate VNet name contains the environment variable
+	vnetName := planData["planned_values"].(map[string]interface{})["root_module"].(map[string]interface{})["resources"].([]interface{})
+	found := false
+	for _, resource := range vnetName {
+		res := resource.(map[string]interface{})
+		if res["type"] == "azurerm_virtual_network" && strings.Contains(res["values"].(map[string]interface{})["name"].(string), environment) {
+			found = true
+			break
+		}
+	}
+	assert.True(t, found, "VNet name should contain the environment variable")
 
 	// Validate the VNet address space is 10.0.0.0/16
-	vnetAddressSpace := terraform.Output(t, terraformOptions, "vnet_address_space")
-	assert.Equal(t, "10.0.0.0/16", vnetAddressSpace, "VNet address space should be 10.0.0.0/16")
+	vnetAddressSpace := vnetName[0].(map[string]interface{})["values"].(map[string]interface{})["address_space"].([]interface{})
+	assert.Contains(t, vnetAddressSpace, "10.0.0.0/16", "VNet address space should be 10.0.0.0/16")
 
-	// Validate that there are two subnets being created
-	subnetCount := terraform.OutputList(t, terraformOptions, "subnets")
-	assert.Equal(t, 2, len(subnetCount), "There should be exactly two subnets created")
+	// Validate that two subnets are being created
+	subnetCount := 0
+	for _, resource := range vnetName {
+		res := resource.(map[string]interface{})
+		if res["type"] == "azurerm_subnet" {
+			subnetCount++
+		}
+	}
+	assert.Equal(t, 2, subnetCount, "There should be exactly two subnets created")
 }
