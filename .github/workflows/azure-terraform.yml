@@ -68,6 +68,16 @@ jobs:
         curl -s https://raw.githubusercontent.com/aquasecurity/tfsec/master/scripts/install_linux.sh | bash
         tfsec .
 
+    # Unit & integration tests with Terratest
+    - name: Run Terratest
+      continue-on-error: true
+      env:
+        AZURE_SUBSCRIPTION_ID: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+        AZURE_CLIENT_ID: ${{ secrets.AZURE_CLIENT_ID }}
+        AZURE_TENANT_ID: ${{ secrets.AZURE_TENANT_ID }}
+        ENVIRONMENT: ${{ env.ENVIRONMENT }}
+      run: go test -v ./test
+
     # Skip applying changes in pull requests
     - name: Skip Apply in Pull Requests
       if: github.event_name == 'pull_request'
@@ -129,16 +139,6 @@ jobs:
     # Apply changes after approval
     - name: Terraform Apply
       run: terraform apply -auto-approve "tfplan"
-
-    # Unit & integration tests with Terratest
-    - name: Run Terratest
-      continue-on-error: true
-      env:
-        AZURE_SUBSCRIPTION_ID: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
-        AZURE_CLIENT_ID: ${{ secrets.AZURE_CLIENT_ID }}
-        AZURE_TENANT_ID: ${{ secrets.AZURE_TENANT_ID }}
-        ENVIRONMENT: ${{ env.ENVIRONMENT }}
-      run: go test -v ./test
 
     # Wait for 1 hour and destroy resources
     - name: Wait for demonstration period
