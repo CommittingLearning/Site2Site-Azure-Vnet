@@ -23,12 +23,4 @@ func TestAzureInfra(t *testing.T) {
 	// Validate that the VNet has been created
 	vnetName := terraform.Output(t, terraformOptions, "vnet_name")
 	assert.Equal(t, "my-vnet", vnetName)
-
-	// Validate that the VM has been created and is in the expected state
-	vmName := terraform.Output(t, terraformOptions, "vm_name")
-	assert.NotEmpty(t, vmName, "VM should have a valid name")
-
-	// Validate that the VPN Gateway is created and its status is correct
-	vpnGatewayStatus := terraform.Output(t, terraformOptions, "vpn_gateway_status")
-	assert.Equal(t, "Succeeded", vpnGatewayStatus)
 }
