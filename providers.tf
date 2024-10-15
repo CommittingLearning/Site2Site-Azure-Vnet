@@ -10,7 +10,7 @@ terraform {
   backend "azurerm" {
     storage_account_name   = "tsblobstore11development"
     container_name         = "terraform-state"
-    key                    = "Site2Site_VPC_${var.environment}"
+    key                    = "Site2Site_VPC_development"
     resource_group_name    = "Site2Site_rg_development"
   }
 }
