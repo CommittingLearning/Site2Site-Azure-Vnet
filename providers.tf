@@ -5,3 +5,12 @@ provider "azurerm" {
     client_id       = var.azure_client_id
     tenant_id       = var.azure_tenant_id
 }
+
+terraform {
+  backend "azurerm" {
+    storage_account_name   = "tsblobstore11development"
+    container_name         = "terraform-state"
+    key                    = "Site2Site_VPC_${var.environment}"
+    resource_group_name    = "Site2Site_rg_development"
+  }
+}
