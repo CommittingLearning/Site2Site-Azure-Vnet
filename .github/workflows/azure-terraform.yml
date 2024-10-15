@@ -38,14 +38,9 @@ jobs:
     # Initialize Terraform Working Directory
     - name: Terraform Init
       run: |
-        terraform init \
-          -backend-config="storage_account_name=tsblobstore11development" \
-          -backend-config="container_name=terraform-state" \
-          -backend-config="key=Site2Site_VPC_development" \
-          -backend-config="resource_group_name=Site2Site_rg_development" \
-          -backend-config="client_id=${{ secrets.AZURE_CLIENT_ID }}" \
-          -backend-config="tenant_id=${{ secrets.AZURE_TENANT_ID }}" \
-          -backend-config="subscription_id=${{ secrets.AZURE_SUBSCRIPTION_ID }}"
+        terraform init -input=false -upgrade \
+          -backend-config="use_oidc=true" \
+          -reconfigure -no-color
 
     # Pre-deployment checks: Terraform validation and plan
     - name: Terraform Validate
@@ -110,16 +105,7 @@ jobs:
     - name: Terraform Init
       run: |
         terraform init -input=false -upgrade \
-          -backend-config="storage_account_name=tsblobstore11development" \
-          -backend-config="container_name=terraform-state" \
-          -backend-config="key=Site2Site_VPC_development" \
-          -backend-config="resource_group_name=Site2Site_rg_development" \
-          -backend-config="client_id=${{ secrets.AZURE_CLIENT_ID }}" \
-          -backend-config="tenant_id=${{ secrets.AZURE_TENANT_ID }}" \
-          -backend-config="subscription_id=${{ secrets.AZURE_SUBSCRIPTION_ID }}" \
           -backend-config="use_oidc=true" \
-          -backend-config="oidc_request_token=${{ steps.azure_login.outputs.id_token }}" \
-          -backend-config="oidc_request_url=${{ secrets.OIDC_URL }}" \
           -reconfigure -no-color
           
     # Set environment variable based on branch
