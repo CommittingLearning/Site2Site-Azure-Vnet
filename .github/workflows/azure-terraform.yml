@@ -39,7 +39,14 @@ jobs:
     - name: Terraform Init
       run: |
         terraform init -input=false -upgrade \
+          -backend-config="storage_account_name=tsblobstore11${{ env.ENVIRONMENT }}" \
+          -backend-config="container_name=terraform-state" \
+          -backend-config="key=Site2Site_VPC_${{ env.ENVIRONMENT }}" \
+          -backend-config="resource_group_name=Site2Site_rg_${{ env.ENVIRONMENT }}" \
           -backend-config="use_oidc=true" \
+          -backend-config="client_id=${{ secrets.AZURE_CLIENT_ID }}" \
+          -backend-config="tenant_id=${{ secrets.AZURE_TENANT_ID }}" \
+          -backend-config="subscription_id=${{ secrets.AZURE_SUBSCRIPTION_ID }}" \
           -reconfigure -no-color
 
     # Pre-deployment checks: Terraform validation and plan
@@ -105,7 +112,14 @@ jobs:
     - name: Terraform Init
       run: |
         terraform init -input=false -upgrade \
+          -backend-config="storage_account_name=tsblobstore11${{ env.ENVIRONMENT }}" \
+          -backend-config="container_name=terraform-state" \
+          -backend-config="key=Site2Site_VPC_${{ env.ENVIRONMENT }}" \
+          -backend-config="resource_group_name=Site2Site_rg_${{ env.ENVIRONMENT }}" \
           -backend-config="use_oidc=true" \
+          -backend-config="client_id=${{ secrets.AZURE_CLIENT_ID }}" \
+          -backend-config="tenant_id=${{ secrets.AZURE_TENANT_ID }}" \
+          -backend-config="subscription_id=${{ secrets.AZURE_SUBSCRIPTION_ID }}" \
           -reconfigure -no-color
           
     # Set environment variable based on branch

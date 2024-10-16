@@ -7,11 +7,5 @@ provider "azurerm" {
 }
 
 terraform {
-  backend "azurerm" {
-    resource_group_name   = "Site2Site_rg_development"
-    storage_account_name  = "tsblobstore11development"
-    container_name        = "terraform-state"
-    key                   = "Site2Site_VPC_development.tfstate"
-    use_oidc              = true
-  }
+  backend "azurerm" {}
 }
