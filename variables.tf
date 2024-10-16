@@ -30,7 +30,7 @@ variable "environment" {
 
 variable "address_space" {
     description = "IP Address space assigned to the VNet"
-    default     = ["10.0.0.0/16"]
+    default     = "10.0.0.0/16"
 }
 
 variable "subnet1_name" {
@@ -40,7 +40,7 @@ variable "subnet1_name" {
 
 variable "subnet1_add_prefix" {
     description = "IP range of the vm subnet"
-    default     = ["10.0.1.0/24"]
+    default     = "10.0.1.0/24"
 }
 
 variable "subnet2_name" {
@@ -50,7 +50,7 @@ variable "subnet2_name" {
 
 variable "subnet2_add_prefix" {
     description = "IP range of the gateway subnet"
-    default     = ["10.0.2.0/24"]
+    default     = "10.0.2.0/24"
 }
 
 variable "subnet3_name" {
@@ -60,5 +60,5 @@ variable "subnet3_name" {
 
 variable "subnet3_add_prefix" {
     description = "Address prefix for the Bastion subnet"
-    default     = ["10.0.3.0/24"]
+    default     = "10.0.3.0/24"
 }
