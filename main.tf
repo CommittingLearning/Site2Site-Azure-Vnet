@@ -59,6 +59,7 @@ resource "azurerm_network_security_group" "gateway_nsg" {
         source_port_range           = "*"
         destination_port_range      = "500"
         source_address_prefix       = "1.1.1.1"     # Needs to be changed once VGW is assigned with a public IP
+        destination_address_prefix  = var.subnet2_add_prefix
     }
 
     # Allow NAT-T traffic from AWS VGW (UDP 4500 for IPSec)
@@ -71,7 +72,7 @@ resource "azurerm_network_security_group" "gateway_nsg" {
         source_port_range          = "*"
         destination_port_range     = "4500"
         source_address_prefix      = "1.1.1.1"   # Replace with the public IP of your AWS VGW
-        destination_address_prefix = "*"
+        destination_address_prefix = var.subnet2_add_prefix
   }
 
   # Allow ESP traffic from AWS VGW (protocol 50 for IPSec)
@@ -84,7 +85,7 @@ resource "azurerm_network_security_group" "gateway_nsg" {
         source_port_range          = "*"
         destination_port_range     = "*"
         source_address_prefix      = "1.1.1.1"   # Replace with the public IP of your AWS VGW
-        destination_address_prefix = "*"
+        destination_address_prefix = var.subnet2_add_prefix
   }
 }
 
