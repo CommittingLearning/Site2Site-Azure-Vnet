@@ -52,7 +52,7 @@ jobs:
         terraform init -input=false -upgrade \
           -backend-config="storage_account_name=tsblobstore11${{ env.ENVIRONMENT }}" \
           -backend-config="container_name=terraform-state" \
-          -backend-config="key=Site2Site_VPC_${{ env.ENVIRONMENT }}" \
+          -backend-config="key=Site2Site_VPC_${{ env.ENVIRONMENT }}.tfstate" \
           -backend-config="resource_group_name=Site2Site_rg_${{ env.ENVIRONMENT }}" \
           -backend-config="use_oidc=true" \
           -backend-config="client_id=${{ secrets.AZURE_CLIENT_ID }}" \
@@ -126,7 +126,7 @@ jobs:
         terraform init -input=false -upgrade \
           -backend-config="storage_account_name=tsblobstore11${{ env.ENVIRONMENT }}" \
           -backend-config="container_name=terraform-state" \
-          -backend-config="key=Site2Site_VPC_${{ env.ENVIRONMENT }}" \
+          -backend-config="key=Site2Site_VPC_${{ env.ENVIRONMENT }}.tfstate" \
           -backend-config="resource_group_name=Site2Site_rg_${{ env.ENVIRONMENT }}" \
           -backend-config="use_oidc=true" \
           -backend-config="client_id=${{ secrets.AZURE_CLIENT_ID }}" \
