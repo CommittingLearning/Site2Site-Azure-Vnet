@@ -34,6 +34,17 @@ jobs:
 
     - name: Set up Terraform
       uses: hashicorp/setup-terraform@v1
+      
+    # Set environment variable based on branch
+    - name: Set environment variable based on branch
+      run: |
+        if [[ "${{ github.ref }}" == "refs/heads/development" ]]; then
+          echo "ENVIRONMENT=development" >> $GITHUB_ENV
+        elif [[ "${{ github.ref }}" == "refs/heads/production" ]]; then
+          echo "ENVIRONMENT=production" >> $GITHUB_ENV
+        else
+          echo "ENVIRONMENT=default" >> $GITHUB_ENV
+        fi
 
     # Initialize Terraform Working Directory
     - name: Terraform Init
@@ -52,17 +63,6 @@ jobs:
     # Pre-deployment checks: Terraform validation and plan
     - name: Terraform Validate
       run: terraform validate
-
-    # Set environment variable based on branch
-    - name: Set environment variable based on branch
-      run: |
-        if [[ "${{ github.ref }}" == "refs/heads/development" ]]; then
-          echo "ENVIRONMENT=development" >> $GITHUB_ENV
-        elif [[ "${{ github.ref }}" == "refs/heads/production" ]]; then
-          echo "ENVIRONMENT=production" >> $GITHUB_ENV
-        else
-          echo "ENVIRONMENT=default" >> $GITHUB_ENV
-        fi
 
     # Terraform Plan with environment passed and save plan output
     - name: Terraform Plan
@@ -108,6 +108,17 @@ jobs:
     - name: Set up Terraform
       uses: hashicorp/setup-terraform@v1
 
+      # Set environment variable based on branch
+    - name: Set environment variable based on branch
+      run: |
+        if [[ "${{ github.ref }}" == "refs/heads/development" ]]; then
+          echo "ENVIRONMENT=development" >> $GITHUB_ENV
+        elif [[ "${{ github.ref }}" == "refs/heads/production" ]]; then
+          echo "ENVIRONMENT=production" >> $GITHUB_ENV
+        else
+          echo "ENVIRONMENT=default" >> $GITHUB_ENV
+        fi
+
     # Initialize Terraform Working Directory
     - name: Terraform Init
       run: |
@@ -121,17 +132,6 @@ jobs:
           -backend-config="tenant_id=${{ secrets.AZURE_TENANT_ID }}" \
           -backend-config="subscription_id=${{ secrets.AZURE_SUBSCRIPTION_ID }}" \
           -reconfigure -no-color
-          
-    # Set environment variable based on branch
-    - name: Set environment variable based on branch
-      run: |
-        if [[ "${{ github.ref }}" == "refs/heads/development" ]]; then
-          echo "ENVIRONMENT=development" >> $GITHUB_ENV
-        elif [[ "${{ github.ref }}" == "refs/heads/production" ]]; then
-          echo "ENVIRONMENT=production" >> $GITHUB_ENV
-        else
-          echo "ENVIRONMENT=default" >> $GITHUB_ENV
-        fi
 
     # Re-run Terraform plan before applying
     - name: Terraform Plan (Re-run)
