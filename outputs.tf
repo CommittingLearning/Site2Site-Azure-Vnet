@@ -12,3 +12,8 @@ output "subnetgateway_name" {
     description = "The name of the Subnet created for the VPN Gateway"
     value       = azurerm_subnet.vpn_gateway_subnet.name
 }
+
+output "subnetbastion_name" {
+  description = "The name of the Subnet created for Bastion"
+  value       = azurerm_subnet.bastion_subnet.name
+}

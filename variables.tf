@@ -52,3 +52,13 @@ variable "subnet2_add_prefix" {
     description = "IP range of the gateway subnet"
     default     = ["10.0.2.0/24"]
 }
+
+variable "subnet3_name" {
+    description = "Name of the Bastion Subnet"
+    default     = "BastionSubnet"
+}
+
+variable "subnet3_add_prefix" {
+    description = "Address prefix for the Bastion subnet"
+    default     = ["10.0.3.0/24"]
+}
