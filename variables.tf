@@ -35,7 +35,7 @@ variable "address_space" {
 
 variable "subnet1_name" {
     description = "Name of the subnet where the VM will be provisioned"
-    default     = "vm-subnet"
+    default     = "vmsubnet"
 }
 
 variable "subnet1_add_prefix" {

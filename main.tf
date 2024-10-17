@@ -1,6 +1,6 @@
 # Creating the vnet resource
 resource "azurerm_virtual_network" "vnet" {
-    name = "vnet_${var.environment}"
+    name = "vnet-${var.environment}"
     address_space = [var.address_space]
     location = var.location
     resource_group_name = "${var.rg_name}_${var.environment}"
@@ -83,7 +83,7 @@ resource "azurerm_network_security_group" "bastion_nsg" {
         access                      = "Allow"
         protocol                    = "Tcp"
         source_port_range           = "*"
-        destination_port_range      = "3389"
+        destination_port_range      = "443"
         source_address_prefix       = "98.247.36.44"
         destination_address_prefix  = var.subnet3_add_prefix
     }
