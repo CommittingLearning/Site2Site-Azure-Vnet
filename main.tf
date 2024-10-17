@@ -75,17 +75,30 @@ resource "azurerm_network_security_group" "bastion_nsg" {
     location            = var.location
     resource_group_name = "${var.rg_name}_${var.environment}"
 
-    # Allow inbound RDP only from public IP
+    # Allow inbound HTTPS (port 443) from any IP for Bastion access (default behavior for Azure Bastion)
     security_rule {
-        name                       = "AllowRDPFromPublicIP"
+        name                       = "AllowHTTPSInbound"
         priority                   = 100
         direction                  = "Inbound"
         access                     = "Allow"
         protocol                   = "Tcp"
         source_port_range          = "*"
         destination_port_range     = "443"
-        source_address_prefix      = "98.247.36.44"
-        destination_address_prefix = var.subnet3_add_prefix
+        source_address_prefix      = "*"
+        destination_address_prefix = "*"
+    }
+
+    # Allow outbound traffic on 443 and 3389 from Bastion to VMs (required by Azure Bastion)
+    security_rule {
+        name                       = "AllowOutboundToVMs"
+        priority                   = 200
+        direction                  = "Outbound"
+        access                     = "Allow"
+        protocol                   = "Tcp"
+        source_port_range          = "*"
+        destination_port_ranges    = ["443", "3389"]
+        source_address_prefix      = "*"
+        destination_address_prefix = "*"
     }
 }
 
