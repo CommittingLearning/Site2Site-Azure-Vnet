@@ -55,7 +55,7 @@ variable "subnet2_add_prefix" {
 
 variable "subnet3_name" {
     description = "Name of the Bastion Subnet"
-    default     = "BastionSubnet"
+    default     = "AzureBastionSubnet"
 }
 
 variable "subnet3_add_prefix" {
