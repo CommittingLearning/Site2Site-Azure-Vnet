@@ -87,19 +87,6 @@ resource "azurerm_network_security_group" "bastion_nsg" {
         source_address_prefix      = "98.247.36.44"
         destination_address_prefix = var.subnet3_add_prefix
     }
-
-    # Allow RDP oubound to VM Subnet
-    security_rule {
-        name                       = "AllowRDPtoVM"
-        priority                   = 200
-        direction                  = "Outbound"
-        access                     = "Allow"
-        protocol                   = "Tcp"
-        source_port_range          = "*"
-        destination_port_range     = "3389"
-        source_address_prefix      = var.subnet3_add_prefix
-        destination_address_prefix = var.subnet1_add_prefix
-    }
 }
 
 # Associate NSG with Bastion Subnet
