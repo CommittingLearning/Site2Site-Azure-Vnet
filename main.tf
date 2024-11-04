@@ -6,7 +6,7 @@ resource "azurerm_virtual_network" "vnet" {
     resource_group_name = "${var.rg_name}_${var.environment}"
 }
 
-#Creating the vm subnet
+# Creating the vm subnet
 resource "azurerm_subnet" "vm_subnet" {
     name                 = var.subnet1_name
     resource_group_name  = "${var.rg_name}_${var.environment}"

@@ -156,7 +156,7 @@ jobs:
     - name: Terraform Apply
       run: terraform apply -auto-approve "tfplan"
 
-    # Wait for 1 hour and destroy resources
+    # Wait for the demonstrated time 
     - name: Wait for demonstration period
       run: sleep 2700
 
